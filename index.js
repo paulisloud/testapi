@@ -22,7 +22,7 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
     // Request headers you wish to allow
-    // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
 
     // Set to true if you need the website to include cookies in the requests sent
     // to the API (e.g. in case you use sessions)
@@ -53,10 +53,18 @@ app.get('/devices/:id', function (req, res, next) {
 })
 
 app.put('/devices/:id', function (req, res, next) {
-  Devices.update({deviceId: req.params.id}, {$set: {status: req.query.status} }, function (error, device) {
-    console.log("PUT for single device: " + req.params.id)
-    res.send(device)
+  var thisDevice = Devices.findOne({deviceId: req.params.id}, function (error, deviceResult) {
+    var newVal = deviceResult.status == 'off' ? 'on' : 'off'
+    console.log("this device: ", deviceResult)
+    console.log("this newVal: ", newVal)
+    Devices.update({deviceId: req.params.id}, {$set: {status: newVal} }, function (error, device) {
+      console.log("PUT for single device: " + req.params.id + " new val: " + newVal)
+      res.send(device)
+    })
   })
+
+
+
 })
 
 var server = require('http').createServer(app).listen(3001)
