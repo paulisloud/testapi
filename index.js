@@ -16,7 +16,7 @@ var Devices = dbConnection.model('Devices', deviceSchema, 'devices')
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', '*');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -39,8 +39,9 @@ app.get('/', function (req, res) {
 app.get('/devices', function (req, res, next) {
   Devices.find({}, function (error, deviceList) {
     if (error) return next(error)
-    console.log("fetching devices")
-    res.send(deviceList)
+    var result = JSON.stringify(deviceList)
+    console.log("Here is the result: " + result)
+    res.send(result)
   })
 })
 
@@ -62,9 +63,6 @@ app.put('/devices/:id', function (req, res, next) {
       res.send(device)
     })
   })
-
-
-
 })
 
 var server = require('http').createServer(app).listen(3001)
