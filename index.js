@@ -45,16 +45,18 @@ app.get('/devices', function (req, res, next) {
   })
 })
 
-app.get('/devices/:id', function (req, res, next) {
-  Devices.findOne({deviceId: req.params.id}, function (error, device) {
-    if (error) return next(error)
-    console.log("fetching device id: " + req.params.id)
-    res.send(device)
-  })
-})
+// app.get('/devices/:id', function (req, res, next) {
+//   Devices.findOne({deviceId: req.params.id}, function (error, device) {
+//     if (error) return next(error)
+//     console.log("fetching device id: " + req.params.id)
+//     res.send(device)
+//   })
+// })
 
-app.put('/devices/:id', function (req, res, next) {
+app.get('/devices/:id', function (req, res, next) {
   var thisDevice = Devices.findOne({deviceId: req.params.id}, function (error, deviceResult) {
+    console.log("here is the query: ", req.content)
+    // var dataMessage = req.body
     var newVal = deviceResult.status == 'off' ? 'on' : 'off'
     console.log("this device: ", deviceResult)
     console.log("this newVal: ", newVal)
@@ -63,6 +65,10 @@ app.put('/devices/:id', function (req, res, next) {
       res.send(device)
     })
   })
+})
+
+app.get('/viewertest', function (req, res, next) {
+  res.sendfile('./viewertest/index.html')
 })
 
 var server = require('http').createServer(app).listen(3001)
